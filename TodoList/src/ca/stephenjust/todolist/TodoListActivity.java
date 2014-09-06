@@ -10,20 +10,24 @@ import android.view.View;
 
 public class TodoListActivity extends Activity {
 
+	static TodoList m_list = null;
+	TodoListFragment m_fragment = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_todo_list);
 		if (savedInstanceState == null) {
+			m_fragment = new TodoListFragment();
 			getFragmentManager().beginTransaction()
-					.add(R.id.container, new TodoListFragment()).commit();
+					.add(R.id.container, m_fragment).commit();
 		}
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
+		getMenuInflater().inflate(R.menu.todo_list, menu);
 		return true;
 	}
 
@@ -33,7 +37,14 @@ public class TodoListActivity extends Activity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		if (id == R.id.action_add) {
+			if (m_list != null) {
+				m_list.add(new TodoItem("bat"));
+				TodoAdapter la = (TodoAdapter) m_fragment.getListAdapter();
+				la.notifyDataSetChanged();
+			}
+			return true;
+		} else if (id == R.id.action_about) {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -43,7 +54,6 @@ public class TodoListActivity extends Activity {
 	 * A placeholder fragment containing a simple view.
 	 */
 	public static class TodoListFragment extends ListFragment {
-		TodoList m_list;
 		
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
