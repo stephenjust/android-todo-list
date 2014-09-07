@@ -1,16 +1,13 @@
 package ca.stephenjust.todolist;
 
 import android.app.Activity;
-import android.app.ListFragment;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 
-public class TodoListActivity extends Activity {
+public class TodoListActivity extends Activity implements TodoListFragment.OnFragmentInteractionListener {
 
-	static TodoList m_list = null;
 	TodoListFragment m_fragment = null;
 	
 	@Override
@@ -18,7 +15,7 @@ public class TodoListActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_todo_list);
 		if (savedInstanceState == null) {
-			m_fragment = new TodoListFragment();
+			m_fragment = TodoListFragment.newInstance("todolist.ser", "archive.ser");
 			getFragmentManager().beginTransaction()
 					.add(R.id.container, m_fragment).commit();
 		}
@@ -38,8 +35,9 @@ public class TodoListActivity extends Activity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_add) {
-			if (m_list != null) {
-				m_list.add(new TodoItem("bat"));
+			TodoList list = m_fragment.getTodoList();
+			if (list != null) {
+				list.add(new TodoItem("bat"));
 				TodoAdapter la = (TodoAdapter) m_fragment.getListAdapter();
 				la.notifyDataSetChanged();
 			}
@@ -50,32 +48,9 @@ public class TodoListActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
-	public static class TodoListFragment extends ListFragment {
-		
-		@Override
-		public void onCreate(Bundle savedInstanceState) {
-			super.onCreate(savedInstanceState);
-			
-			m_list = new TodoList();
-			m_list.add(new TodoItem("Foo"));
-			m_list.add(new TodoItem("Bar"));
-		}
-		
-		@Override
-		public void onViewCreated(View view, Bundle savedInstanceState) {
-			super.onViewCreated(view, savedInstanceState);
-			
-			setListAdapter(new TodoAdapter(getActivity(), m_list));
-		}
-		
-		@Override
-		public void onDestroyView() {
-			super.onDestroyView();
-			
-			setListAdapter(null);
-		}
+	@Override
+	public void onFragmentInteraction(String text) {
+	    return;
 	}
+
 }
