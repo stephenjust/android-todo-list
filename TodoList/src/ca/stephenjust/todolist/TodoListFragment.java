@@ -1,5 +1,18 @@
 package ca.stephenjust.todolist;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.app.ListFragment;
@@ -7,6 +20,7 @@ import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Loader;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
@@ -93,7 +107,7 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 	@Override
 	public void onPause() {
 		super.onPause();
-		// TODO: Serialize data here.
+		saveTodoList(m_listName, m_list);
 	}
 
 	@Override
@@ -126,9 +140,30 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 		return m_list;
 	}
 
+	private void saveTodoList(String listName, TodoList list) {
+		OutputStream os;
+		ObjectOutput oo;
+		try {
+			os = new BufferedOutputStream(getActivity().openFileOutput(listName, Context.MODE_PRIVATE));
+			oo = new ObjectOutputStream(os);
+			try {
+				oo.writeObject(m_list);
+				Log.d("saveTodoList", "Saved list to file " + listName);
+			} finally {
+				oo.close();
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	public Loader<TodoList> onCreateLoader(int id, Bundle args) {
-		return new TodoListLoader(getActivity());
+		return new TodoListLoader(getActivity(), m_listName);
 	}
 
 	@Override
@@ -152,16 +187,39 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 	
 	private static class TodoListLoader extends AsyncTaskLoader<TodoList> {
 
-		public TodoListLoader(Context context) {
+		String m_listFile;
+		Context m_context;
+		
+		public TodoListLoader(Context context, String listFile) {
 			super(context);
+			m_context = context;
+			m_listFile = listFile;
 		}
 
 		@Override
 		public TodoList loadInBackground() {
-			TodoList list = new TodoList();
-			list.add(new TodoItem("Foo"));
-			list.add(new TodoItem("Bar"));
-			return list;
+			InputStream is;
+			ObjectInput oi;
+			try {
+				try {
+					is = new BufferedInputStream(m_context.openFileInput(m_listFile));
+				} catch (FileNotFoundException e) {
+					Log.d("loadTodoList", "No list found. Returning new one.");
+					return new TodoList();
+				}
+				oi = new ObjectInputStream(is);
+				try {
+					return (TodoList) oi.readObject();
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				} finally {
+					oi.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			Log.e("loadTodoList", "Failed to load TodoList");
+			return null;
 		}
 
 	}
