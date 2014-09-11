@@ -1,12 +1,15 @@
 package ca.stephenjust.todolist;
 
 import android.app.Activity;
+import android.app.DialogFragment;
+import android.app.FragmentTransaction;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class TodoListActivity extends Activity implements TodoListFragment.OnFragmentInteractionListener {
+public class TodoListActivity extends Activity implements TodoListFragment.OnFragmentInteractionListener, TodoEditFragment.OnFragmentInteractionListener {
 
 	TodoListFragment m_fragment = null;
 	
@@ -28,6 +31,18 @@ public class TodoListActivity extends Activity implements TodoListFragment.OnFra
 		return true;
 	}
 
+	private void addTodoItem() {
+		DialogFragment dlg = TodoEditFragment.newInstance("");
+		FragmentTransaction ft = getFragmentManager().beginTransaction();
+		dlg.show(ft, "dialog");
+		TodoList list = m_fragment.getTodoList();
+		if (list != null) {
+			list.add(new TodoItem("bat"));
+			TodoAdapter la = (TodoAdapter) m_fragment.getListAdapter();
+			la.notifyDataSetChanged();
+		}
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
@@ -35,12 +50,7 @@ public class TodoListActivity extends Activity implements TodoListFragment.OnFra
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_add) {
-			TodoList list = m_fragment.getTodoList();
-			if (list != null) {
-				list.add(new TodoItem("bat"));
-				TodoAdapter la = (TodoAdapter) m_fragment.getListAdapter();
-				la.notifyDataSetChanged();
-			}
+			addTodoItem();
 			return true;
 		} else if (id == R.id.action_about) {
 			return true;
@@ -51,6 +61,12 @@ public class TodoListActivity extends Activity implements TodoListFragment.OnFra
 	@Override
 	public void onFragmentInteraction(String text) {
 	    return;
+	}
+
+	@Override
+	public void onFragmentInteraction(Uri uri) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
