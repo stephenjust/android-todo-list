@@ -9,13 +9,12 @@
         android:id="@+id/editItemText"
         android:layout_width="0px"
         android:layout_height="match_parent"
-        android:lines="1"
-        android:maxLines="1"
+        android:layout_weight="5"
+        android:hint="@string/todo_hint"
         android:inputType="textCapSentences"
-        android:layout_weight="5">
+        android:lines="1"
+        android:maxLines="1" />
 
-        <requestFocus />
-    </EditText>
     <Button
         android:id="@+id/editItemSave"
         android:text="@string/ok"

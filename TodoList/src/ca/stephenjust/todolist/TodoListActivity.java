@@ -35,12 +35,6 @@ public class TodoListActivity extends Activity implements TodoListFragment.OnFra
 		DialogFragment dlg = TodoEditFragment.newInstance("");
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
 		dlg.show(ft, "dialog");
-		TodoList list = m_fragment.getTodoList();
-		if (list != null) {
-			list.add(new TodoItem("bat"));
-			TodoAdapter la = (TodoAdapter) m_fragment.getListAdapter();
-			la.notifyDataSetChanged();
-		}
 	}
 	
 	@Override

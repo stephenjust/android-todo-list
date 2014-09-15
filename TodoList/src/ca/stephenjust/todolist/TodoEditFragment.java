@@ -2,6 +2,7 @@ package ca.stephenjust.todolist;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,13 +79,13 @@ public class TodoEditFragment extends DialogFragment {
 			}
 			
 		});
+		
 		return view;
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-
 	}
 
 	@Override
