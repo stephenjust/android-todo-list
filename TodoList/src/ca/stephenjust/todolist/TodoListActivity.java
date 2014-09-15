@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 
 public class TodoListActivity extends Activity implements TodoListFragment.OnFragmentInteractionListener, TodoEditFragment.OnFragmentInteractionListener {
@@ -64,9 +65,20 @@ public class TodoListActivity extends Activity implements TodoListFragment.OnFra
 	}
 
 	@Override
-	public void onFragmentInteraction(Uri uri) {
-		// TODO Auto-generated method stub
-		
+	public void onFragmentInteraction(Bundle bundle) {
+		String fragment = bundle.getString("fragment");
+		if (fragment.equals("edit")) {
+			TodoList list = m_fragment.getTodoList();
+			if (list != null) {
+				try {
+					list.add(new TodoItem(bundle.getString("value")));
+					TodoAdapter la = (TodoAdapter) m_fragment.getListAdapter();
+					la.notifyDataSetChanged();
+				} catch (IllegalArgumentException ex) {
+					Toast.makeText(this, R.string.invalid_todo_text, Toast.LENGTH_SHORT).show();
+				}
+			}
+		}
 	}
 
 }

@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,6 +22,8 @@ public class TodoEditFragment extends DialogFragment {
 
 	private OnFragmentInteractionListener mListener;
 
+	private EditText m_editText;
+	
 	/**
 	 * Use this factory method to create a new instance of this fragment using
 	 * the provided parameters.
@@ -59,9 +62,23 @@ public class TodoEditFragment extends DialogFragment {
 		// Inflate the layout for this fragment
 		View view = inflater.inflate(R.layout.fragment_todo_edit, container,
 				false);
-		EditText e = (EditText) view.findViewById(R.id.editItemText);
+		m_editText = (EditText) view.findViewById(R.id.editItemText);
+		m_editText.setText(m_item);
 		Button b = (Button) view.findViewById(R.id.editItemSave);
-		e.setText(m_item);
+		b.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (mListener != null) {
+					Bundle bundle = new Bundle();
+					bundle.putString("fragment", "edit");
+					bundle.putString("value", m_editText.getText().toString());
+					mListener.onFragmentInteraction(bundle);
+				}
+				dismiss();
+			}
+			
+		});
 		return view;
 	}
 
@@ -69,13 +86,6 @@ public class TodoEditFragment extends DialogFragment {
 	public void onResume() {
 		super.onResume();
 
-	}
-
-	// TODO: Rename method, update argument and hook method into UI event
-	public void onButtonPressed(Uri uri) {
-		if (mListener != null) {
-			mListener.onFragmentInteraction(uri);
-		}
 	}
 
 	@Override
@@ -105,8 +115,7 @@ public class TodoEditFragment extends DialogFragment {
 	 * >Communicating with Other Fragments</a> for more information.
 	 */
 	public interface OnFragmentInteractionListener {
-		// TODO: Update argument type and name
-		public void onFragmentInteraction(Uri uri);
+		public void onFragmentInteraction(Bundle bundle);
 	}
 
 }
