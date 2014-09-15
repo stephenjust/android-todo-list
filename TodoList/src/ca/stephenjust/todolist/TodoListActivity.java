@@ -3,7 +3,6 @@ package ca.stephenjust.todolist;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
