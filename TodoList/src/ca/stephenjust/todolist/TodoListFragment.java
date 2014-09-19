@@ -1,15 +1,11 @@
 package ca.stephenjust.todolist;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -19,13 +15,11 @@ import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Loader;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
