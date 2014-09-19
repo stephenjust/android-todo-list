@@ -1,12 +1,5 @@
 package ca.stephenjust.todolist;
 
-import java.io.BufferedInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.app.ListFragment;
@@ -160,7 +153,7 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 
 	@Override
 	public Loader<TodoList> onCreateLoader(int id, Bundle args) {
-		return new TodoListLoader(getActivity(), m_listName);
+		return new TodoListLoader(getActivity(), m_listName, m_listReaderWriter);
 	}
 
 	@Override
@@ -189,44 +182,17 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 	private static class TodoListLoader extends AsyncTaskLoader<TodoList> {
 
 		String m_listFile;
-		Context m_context;
+		TodoListReaderWriter m_readerWriter;
 		
-		public TodoListLoader(Context context, String listFile) {
+		public TodoListLoader(Context context, String listFile, TodoListReaderWriter listRW) {
 			super(context);
-			m_context = context;
 			m_listFile = listFile;
+			m_readerWriter = listRW;
 		}
 
 		@Override
 		public TodoList loadInBackground() {
-			InputStream is;
-			ObjectInput oi;
-			try {
-				try {
-					is = new BufferedInputStream(m_context.openFileInput(m_listFile));
-				} catch (FileNotFoundException e) {
-					Log.d("loadTodoList", "No list found. Returning new one.");
-					return new TodoList();
-				}
-				oi = new ObjectInputStream(is);
-				try {
-					TodoList list = (TodoList) oi.readObject();
-					if (list == null) {
-						Log.e("loadTodoList", "Loaded list was null. Returning new list.");
-						return new TodoList();
-					} else {
-						return list;
-					}
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				} finally {
-					oi.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			Log.e("loadTodoList", "Failed to load TodoList");
-			return null;
+			return m_readerWriter.read(m_listFile);
 		}
 
 	}
