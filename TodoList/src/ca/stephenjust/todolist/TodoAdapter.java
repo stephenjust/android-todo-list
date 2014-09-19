@@ -32,6 +32,7 @@ public class TodoAdapter extends ArrayAdapter<TodoItem> {
 		} else {
 			rowView = inflater.inflate(R.layout.list_todo,  parent, false);
 		}
+		rowView.setLongClickable(true);
 		CheckBox check = (CheckBox) rowView.findViewById(R.id.check_todo);
 		TextView text = (TextView) rowView.findViewById(R.id.text_todo);
 		

@@ -9,5 +9,10 @@
     <string name="invalid_todo_text">Oops, invalid text!</string>
     <string name="ok">OK</string>
     <string name="tmp">Loading</string>
+    
+    <!-- Todo Context Menu -->
+    <string name="menu_delete">Delete</string>
+    <string name="menu_email">Email Items</string>
+    <string name="menu_archive">Archive Items</string>
 
 </resources>

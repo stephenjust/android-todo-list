@@ -19,7 +19,16 @@ import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Loader;
 import android.util.Log;
+import android.util.SparseBooleanArray;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnLongClickListener;
+import android.widget.AbsListView.MultiChoiceModeListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 
 
@@ -42,6 +51,9 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 	private TodoList m_list;
 
 	private OnFragmentInteractionListener mListener;
+	
+	private ActionMode mActionMode;
+	private MultiChoiceModeListener m_actionModeListener;
 
 	/**
 	 * Create list fragment.
@@ -76,6 +88,8 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 			m_listName = getArguments().getString(ARG_LIST);
 			m_archiveListName = getArguments().getString(ARG_ARCHIVE_LIST);
 		}
+		
+		m_actionModeListener = new TodoSelectListener();
 	}
 
 	@Override
@@ -106,6 +120,16 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 	public void onPause() {
 		super.onPause();
 		saveTodoList(m_listName, m_list);
+	}
+	
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		OnItemLongClickListener clickListener = new TodoClickListener();
+		ListView listView = getListView();
+		listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+		listView.setMultiChoiceModeListener(m_actionModeListener);
+		listView.setOnItemLongClickListener(clickListener);
 	}
 
 	@Override
@@ -167,6 +191,10 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 	@Override
 	public void onLoadFinished(Loader<TodoList> loader, TodoList data) {
 		m_list = data;
+		if (data == null) {
+			Log.wtf("TodoLoader", "Data loaded was null??");
+		}
+		Log.d("TodoLoader", "Loaded " + data.size() + " items.");
 		TodoAdapter adapter = new TodoAdapter(getActivity(), data);
 		setListAdapter(adapter);
 		
@@ -207,7 +235,13 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 				}
 				oi = new ObjectInputStream(is);
 				try {
-					return (TodoList) oi.readObject();
+					TodoList list = (TodoList) oi.readObject();
+					if (list == null) {
+						Log.e("loadTodoList", "Loaded list was null. Returning new list.");
+						return new TodoList();
+					} else {
+						return list;
+					}
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				} finally {
@@ -221,5 +255,70 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 		}
 
 	}
+
+	class TodoClickListener implements OnItemLongClickListener {
+
+		@Override
+		public boolean onItemLongClick(AdapterView<?> parent, View view,
+				int position, long id) {
+			if (mActionMode != null) {
+				return false;
+			}
+			mActionMode = getActivity().startActionMode(m_actionModeListener);
+			view.setSelected(true);
+			return true;
+		}
+		
+	}
+	
+	class TodoSelectListener implements MultiChoiceModeListener {
+
+		@Override
+		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			MenuInflater inflater = mode.getMenuInflater();
+			inflater.inflate(R.menu.todo_context_menu, menu);
+			return true;
+		}
+
+		@Override
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+			mActionMode = null;
+		}
+
+		@Override
+		public void onItemCheckedStateChanged(ActionMode mode, int position,
+				long id, boolean checked) {
+			Log.w("Foo", "Item " + id + " state changed.");
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
+/*	@Override
+	public boolean onLongClick(View v) {
+		SparseBooleanArray checked = getListView().getCheckedItemPositions();
+		TodoList selectedItems = new TodoList();
+		v.setSelected(!v.isSelected());
+		Log.w("TodoListFragment", "Selected view.");
+		for (int i = 0; i < checked.size(); i++) {
+			int position = checked.keyAt(i);
+			if (checked.valueAt(i))
+				selectedItems.add(m_list.get(i));
+		}
+		return true;
+	}*/
 	
 }
