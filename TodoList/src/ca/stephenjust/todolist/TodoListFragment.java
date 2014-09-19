@@ -49,6 +49,7 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 	private String m_archiveListName;
 	
 	private TodoList m_list;
+	private TodoListReaderWriter m_listReaderWriter;
 
 	private OnFragmentInteractionListener mListener;
 	
@@ -90,6 +91,7 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 		}
 		
 		m_actionModeListener = new TodoSelectListener();
+		m_listReaderWriter = new TodoListReaderWriter(getActivity().getApplication());
 	}
 
 	@Override
@@ -119,7 +121,7 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 	@Override
 	public void onPause() {
 		super.onPause();
-		saveTodoList(m_listName, m_list);
+		m_listReaderWriter.write(m_listName,  m_list);
 	}
 	
 	@Override
@@ -162,27 +164,6 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 		return m_list;
 	}
 
-	private void saveTodoList(String listName, TodoList list) {
-		OutputStream os;
-		ObjectOutput oo;
-		try {
-			os = new BufferedOutputStream(getActivity().openFileOutput(listName, Context.MODE_PRIVATE));
-			oo = new ObjectOutputStream(os);
-			try {
-				oo.writeObject(m_list);
-				Log.d("saveTodoList", "Saved list to file " + listName);
-			} finally {
-				oo.close();
-			}
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
 	@Override
 	public Loader<TodoList> onCreateLoader(int id, Bundle args) {
 		return new TodoListLoader(getActivity(), m_listName);
