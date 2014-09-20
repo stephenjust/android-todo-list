@@ -18,7 +18,7 @@ public class TodoItem implements Serializable {
 		setText(text);
 		setCompleted(Boolean.FALSE);
 	}
-	
+
 	/**
 	 * Set a to-do's text
 	 * @param text To-do text
@@ -30,7 +30,7 @@ public class TodoItem implements Serializable {
 		}
 		m_text = trimmedText;
 	}
-	
+
 	/**
 	 * Get a to-do's text
 	 * @return To-do's text
@@ -46,7 +46,7 @@ public class TodoItem implements Serializable {
 	public void setCompleted(Boolean completed) {
 		m_completed = completed;
 	}
-	
+
 	/**
 	 * Get a to-do's completion status
 	 * @return Completion status
@@ -54,7 +54,7 @@ public class TodoItem implements Serializable {
 	public Boolean getCompleted() {
 		return m_completed;
 	}
-	
+
 	@Override
 	public String toString() {
 		if (getCompleted()) {
@@ -63,5 +63,20 @@ public class TodoItem implements Serializable {
 			return "[ ] " + getText();
 		}
 	}
-	
+
+	@Override
+	public int hashCode() {
+		return getText().hashCode() ^ (31 * getCompleted().hashCode());
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (hashCode() != obj.hashCode()) return false;
+		if (!(obj instanceof TodoItem)) return false;
+		TodoItem item = (TodoItem) obj;
+		return getText().equals(item.getText()) &&
+				getCompleted().equals(item.getCompleted());
+	}
+
 }
