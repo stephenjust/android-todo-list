@@ -11,29 +11,27 @@ import android.widget.Button;
 import android.widget.EditText;
 
 
+/**
+ * Dialog that prompts for the text of a to-do item.
+ * @author Stephen Just
+ *
+ */
 public class TodoEditFragment extends DialogFragment {
-	// TODO: Rename parameter arguments, choose names that match
-	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+	// Arguments
 	private static final String ARG_ITEM = "todo_item";
 
-	// TODO: Rename and change types of parameters
-	private String m_item;
-
+	private String mItem;
 	private OnFragmentInteractionListener mListener;
-
-	private EditText m_editText;
+	private EditText mEditText;
 	
 	/**
 	 * Use this factory method to create a new instance of this fragment using
 	 * the provided parameters.
 	 * 
-	 * @param param1
-	 *            Parameter 1.
-	 * @param param2
-	 *            Parameter 2.
+	 * @param item
+	 *            To-do item text, may be blank.
 	 * @return A new instance of fragment TodoEditFragment.
 	 */
-	// TODO: Rename and change types and number of parameters
 	public static TodoEditFragment newInstance(String item) {
 		TodoEditFragment fragment = new TodoEditFragment();
 		Bundle args = new Bundle();
@@ -50,9 +48,10 @@ public class TodoEditFragment extends DialogFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		if (getArguments() != null) {
-			m_item = getArguments().getString(ARG_ITEM);
+			mItem = getArguments().getString(ARG_ITEM);
 		}
-		setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Holo_Light_Dialog_MinWidth);
+		setStyle(DialogFragment.STYLE_NO_TITLE,
+				android.R.style.Theme_Holo_Light_Dialog_MinWidth);
 	}
 
 	@Override
@@ -61,8 +60,8 @@ public class TodoEditFragment extends DialogFragment {
 		// Inflate the layout for this fragment
 		View view = inflater.inflate(R.layout.fragment_todo_edit, container,
 				false);
-		m_editText = (EditText) view.findViewById(R.id.editItemText);
-		m_editText.setText(m_item);
+		mEditText = (EditText) view.findViewById(R.id.editItemText);
+		mEditText.setText(mItem);
 		Button b = (Button) view.findViewById(R.id.editItemSave);
 		b.setOnClickListener(new OnClickListener() {
 
@@ -71,20 +70,15 @@ public class TodoEditFragment extends DialogFragment {
 				if (mListener != null) {
 					Bundle bundle = new Bundle();
 					bundle.putString("fragment", "edit");
-					bundle.putString("value", m_editText.getText().toString());
+					bundle.putString("value", mEditText.getText().toString());
 					mListener.onFragmentInteraction(bundle);
 				}
 				dismiss();
 			}
-			
+
 		});
 		
 		return view;
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
 	}
 
 	@Override
@@ -108,10 +102,6 @@ public class TodoEditFragment extends DialogFragment {
 	 * This interface must be implemented by activities that contain this
 	 * fragment to allow an interaction in this fragment to be communicated to
 	 * the activity and potentially other fragments contained in that activity.
-	 * <p>
-	 * See the Android Training lesson <a href=
-	 * "http://developer.android.com/training/basics/fragments/communicating.html"
-	 * >Communicating with Other Fragments</a> for more information.
 	 */
 	public interface OnFragmentInteractionListener {
 		public void onFragmentInteraction(Bundle bundle);
