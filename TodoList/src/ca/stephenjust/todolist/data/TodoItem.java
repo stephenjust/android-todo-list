@@ -9,8 +9,8 @@ import java.io.Serializable;
  */
 public class TodoItem implements Serializable {
 
-	String m_text;
-	Boolean m_completed;
+	String mText;
+	Boolean mCompleted;
 
 	private static final long serialVersionUID = 2256913946973350575L;
 
@@ -28,7 +28,7 @@ public class TodoItem implements Serializable {
 		if (trimmedText.length() == 0) {
 			throw new IllegalArgumentException("Text may not be empty.");
 		}
-		m_text = trimmedText;
+		mText = trimmedText;
 	}
 
 	/**
@@ -36,7 +36,7 @@ public class TodoItem implements Serializable {
 	 * @return To-do's text
 	 */
 	public String getText() {
-		return m_text;
+		return mText;
 	}
 
 	/**
@@ -44,7 +44,7 @@ public class TodoItem implements Serializable {
 	 * @param completed
 	 */
 	public void setCompleted(Boolean completed) {
-		m_completed = completed;
+		mCompleted = completed;
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class TodoItem implements Serializable {
 	 * @return Completion status
 	 */
 	public Boolean getCompleted() {
-		return m_completed;
+		return mCompleted;
 	}
 
 	@Override
