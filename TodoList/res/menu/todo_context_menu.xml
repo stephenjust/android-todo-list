@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/item_delete" android:title="@string/menu_delete" android:visible="true"></item>
+    <item android:id="@+id/item_delete" android:title="@string/menu_delete" android:visible="true" android:icon="@drawable/ic_action_discard"></item>
     <item android:id="@+id/item_archive" android:title="@string/menu_archive" android:visible="true"></item>
-    <item android:id="@+id/item_email" android:title="@string/menu_email" android:visible="true"></item>
+    <item android:id="@+id/item_email" android:title="@string/menu_email" android:visible="true" android:icon="@drawable/ic_action_email"></item>
     
 
 </menu>
