@@ -2,6 +2,8 @@ package ca.stephenjust.todolist;
 
 import java.util.List;
 
+import ca.stephenjust.todolist.data.TodoItem;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;

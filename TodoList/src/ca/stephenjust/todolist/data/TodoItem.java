@@ -1,15 +1,17 @@
-package ca.stephenjust.todolist;
+package ca.stephenjust.todolist.data;
 
 import java.io.Serializable;
 
+/**
+ * Model for a to-do item.
+ * @author Stephen Just
+ *
+ */
 public class TodoItem implements Serializable {
 
 	String m_text;
 	Boolean m_completed;
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 2256913946973350575L;
 
 	public TodoItem(String text) {

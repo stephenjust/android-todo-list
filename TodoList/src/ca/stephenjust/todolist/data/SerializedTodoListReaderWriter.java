@@ -1,4 +1,4 @@
-package ca.stephenjust.todolist;
+package ca.stephenjust.todolist.data;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -11,14 +11,15 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
+
 import android.content.Context;
 import android.util.Log;
 
-public class TodoListReaderWriter {
+public class SerializedTodoListReaderWriter implements ITodoListReaderWriter {
 
 	Context mContext;
 
-	public TodoListReaderWriter(Context context) {
+	public SerializedTodoListReaderWriter(Context context) {
 		mContext = context;
 	}
 

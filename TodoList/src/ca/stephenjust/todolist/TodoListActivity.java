@@ -1,5 +1,7 @@
 package ca.stephenjust.todolist;
 
+import ca.stephenjust.todolist.data.TodoItem;
+import ca.stephenjust.todolist.data.TodoList;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;

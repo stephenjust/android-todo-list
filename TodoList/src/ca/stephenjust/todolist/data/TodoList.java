@@ -1,35 +1,31 @@
-package ca.stephenjust.todolist;
+package ca.stephenjust.todolist.data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+
 /**
  * List of To-Do Items
- * @author Stephen
+ * @author Stephen Just
  *
- * This list may represent either current or archived to-do's.
+ * This list represents any list of to-do items.
  */
 public class TodoList extends ArrayList<TodoItem> implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1678410371420859707L;
 
 	public TodoList() {
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
 	public TodoList(int capacity) {
 		super(capacity);
-		// TODO Auto-generated constructor stub
 	}
 
 	public TodoList(Collection<? extends TodoItem> collection) {
 		super(collection);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**

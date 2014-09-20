@@ -1,5 +1,8 @@
 package ca.stephenjust.todolist;
 
+import ca.stephenjust.todolist.data.ITodoListReaderWriter;
+import ca.stephenjust.todolist.data.TodoList;
+import ca.stephenjust.todolist.data.SerializedTodoListReaderWriter;
 import android.app.Activity;
 import android.os.Bundle;
 import android.app.ListFragment;
@@ -36,7 +39,7 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 	private String m_archiveListName;
 	
 	private TodoList m_list;
-	private TodoListReaderWriter m_listReaderWriter;
+	private ITodoListReaderWriter m_listReaderWriter;
 
 	private OnFragmentInteractionListener mListener;
 	
@@ -78,7 +81,7 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 		}
 		
 		m_actionModeListener = new TodoSelectListener();
-		m_listReaderWriter = new TodoListReaderWriter(getActivity().getApplication());
+		m_listReaderWriter = new SerializedTodoListReaderWriter(getActivity().getApplication());
 	}
 
 	@Override
@@ -159,11 +162,12 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 	@Override
 	public void onLoadFinished(Loader<TodoList> loader, TodoList data) {
 		m_list = data;
-		if (data == null) {
-			Log.wtf("TodoLoader", "Data loaded was null??");
+		if (m_list == null) {
+			Log.e("TodoLoader", "Returned data was null.");
+			m_list = new TodoList();
 		}
-		Log.d("TodoLoader", "Loaded " + data.size() + " items.");
-		TodoAdapter adapter = new TodoAdapter(getActivity(), data);
+		Log.d("TodoLoader", "Loaded " + m_list.size() + " items.");
+		TodoAdapter adapter = new TodoAdapter(getActivity(), m_list);
 		setListAdapter(adapter);
 		
         // The list should now be shown.
@@ -182,9 +186,9 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 	private static class TodoListLoader extends AsyncTaskLoader<TodoList> {
 
 		String m_listFile;
-		TodoListReaderWriter m_readerWriter;
+		ITodoListReaderWriter m_readerWriter;
 		
-		public TodoListLoader(Context context, String listFile, TodoListReaderWriter listRW) {
+		public TodoListLoader(Context context, String listFile, ITodoListReaderWriter listRW) {
 			super(context);
 			m_listFile = listFile;
 			m_readerWriter = listRW;
