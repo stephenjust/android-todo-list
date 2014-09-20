@@ -55,4 +55,13 @@ public class TodoItem implements Serializable {
 		return m_completed;
 	}
 	
+	@Override
+	public String toString() {
+		if (getCompleted()) {
+			return "[x] " + getText();
+		} else {
+			return "[ ] " + getText();
+		}
+	}
+	
 }

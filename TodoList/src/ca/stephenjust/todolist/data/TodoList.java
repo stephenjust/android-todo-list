@@ -52,4 +52,13 @@ public class TodoList extends ArrayList<TodoItem> implements Serializable {
 		return size() - numChecked();
 	}
 
+	@Override
+	public String toString() {
+		String s = "";
+		for (TodoItem item: this) {
+			s += item.toString() + "\n";
+		}
+		return s;
+	}
+
 }
