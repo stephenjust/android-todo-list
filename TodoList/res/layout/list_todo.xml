@@ -3,15 +3,23 @@
     android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="false"
-    android:longClickable="true"
+    android:background="?android:attr/activatedBackgroundIndicator"
     android:orientation="horizontal"
     android:padding="8dp" >
 
     <CheckBox
-        android:id="@+id/check_todo"
+        android:id="@+id/todo_check"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/tmp" />
+        android:layout_gravity="top"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+
+    <TextView
+        android:id="@+id/todo_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </LinearLayout>

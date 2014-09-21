@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.TextView;
 
 public class TodoAdapter extends ArrayAdapter<TodoItem> {
 
@@ -19,28 +20,27 @@ public class TodoAdapter extends ArrayAdapter<TodoItem> {
 	final List<TodoItem> mItems;
 	
 	public TodoAdapter(Context context, List<TodoItem> objects) {
-		super(context, R.layout.list_todo, objects);
+		super(context, R.layout.list_todo, R.id.todo_label, objects);
 		mContext = context;
 		mItems = objects;
 	}
 	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		View rowView;
-		LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		if (convertView != null) {
-			rowView = convertView;
-		} else {
-			rowView = inflater.inflate(R.layout.list_todo,  parent, false);
+		View v = convertView;
+		if (v == null) {
+			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			v = inflater.inflate(R.layout.list_todo, parent, false);
 		}
-		CheckBox check = (CheckBox) rowView.findViewById(R.id.check_todo);
+		CheckBox check = (CheckBox) v.findViewById(R.id.todo_check);
+		TextView text = (TextView) v.findViewById(R.id.todo_label);
 		
 		TodoItem item = mItems.get(position);
 		check.setOnCheckedChangeListener(new TodoCheckboxListener(position));
 		check.setChecked(item.getCompleted());
-		check.setText(item.getText());
+		text.setText(item.getText());
 		
-		return rowView;
+		return v;
 	}
 
 	private class TodoCheckboxListener implements OnCheckedChangeListener {
