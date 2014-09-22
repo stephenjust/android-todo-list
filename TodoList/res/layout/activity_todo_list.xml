@@ -1,9 +1,23 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
+    android:id="@+id/view_switcher"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="0dp"
-    tools:context="ca.stephenjust.todolist.TodoListActivity" >
+    android:layout_height="match_parent" >
 
-</FrameLayout>
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="0dp"
+        tools:context="ca.stephenjust.todolist.TodoListActivity" >
+    </FrameLayout>
+    
+    <FrameLayout
+        android:id="@+id/container_archived"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="0dp"
+        tools:context="ca.stephenjust.todolist.TodoListActivity" >
+    </FrameLayout>
+
+</ViewSwitcher>

@@ -2,6 +2,7 @@ package ca.stephenjust.todolist;
 
 import ca.stephenjust.todolist.data.TodoItem;
 import ca.stephenjust.todolist.data.TodoList;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
@@ -9,21 +10,60 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 
 public class TodoListActivity extends Activity implements TodoListFragment.OnFragmentInteractionListener, TodoEditFragment.OnFragmentInteractionListener {
 
 	TodoListFragment m_fragment = null;
+	TodoListFragment m_fragment_archived = null;
+	ViewSwitcher mViewSwitcher = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setupTabs();
+
 		setContentView(R.layout.activity_todo_list);
 		if (savedInstanceState == null) {
 			m_fragment = TodoListFragment.newInstance("todolist.ser", "archive.ser");
+			m_fragment_archived = TodoListFragment.newInstance("archive.ser", null);
 			getFragmentManager().beginTransaction()
-					.add(R.id.container, m_fragment).commit();
+					.add(R.id.container, m_fragment)
+					.add(R.id.container_archived, m_fragment_archived).commit();
+			mViewSwitcher = (ViewSwitcher) findViewById(R.id.view_switcher);
 		}
+	}
+	
+	public void setupTabs() {
+		final ActionBar actionBar = getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		
+	    ActionBar.TabListener tabListener = new ActionBar.TabListener() {
+	        public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+	        	if (mViewSwitcher != null) {
+	        		mViewSwitcher.setDisplayedChild(tab.getPosition());
+	        	}
+	        }
+
+	        public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+	            // hide the given tab
+	        }
+
+	        public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+	            // probably ignore this event
+	        }
+	    };
+
+        actionBar.addTab(
+                actionBar.newTab()
+                        .setText(R.string.tab_current)
+                        .setTabListener(tabListener));
+        actionBar.addTab(
+                actionBar.newTab()
+                        .setText(R.string.tab_archived)
+                        .setTabListener(tabListener));
+		
 	}
 
 	@Override

@@ -15,6 +15,10 @@
     <string name="menu_email">Email Items</string>
     <string name="menu_archive">Archive Items</string>
     
+    <!-- Tab titles -->
+    <string name="tab_current">Current</string>
+    <string name="tab_archived">Archived</string>
+    
     <!-- Emailer -->
     <string name="email_dialog_title">Send to-do list&#8230;</string>
     <string name="email_subject">My To-Do List</string>
