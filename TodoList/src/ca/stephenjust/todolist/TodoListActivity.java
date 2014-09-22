@@ -55,11 +55,6 @@ public class TodoListActivity extends Activity implements TodoListFragment.OnFra
 	}
 
 	@Override
-	public void onFragmentInteraction(String text) {
-	    return;
-	}
-
-	@Override
 	public void onFragmentInteraction(Bundle bundle) {
 		String fragment = bundle.getString("fragment");
 		if (fragment.equals("edit")) {

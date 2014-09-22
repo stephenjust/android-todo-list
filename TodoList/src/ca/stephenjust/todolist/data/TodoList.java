@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import android.util.SparseBooleanArray;
+
 
 /**
  * List of To-Do Items
@@ -50,6 +52,18 @@ public class TodoList extends ArrayList<TodoItem> implements Serializable {
 	 */
 	public Long numUnchecked() {
 		return size() - numChecked();
+	}
+
+	/**
+	 * Delete list items with values of 'true'
+	 * @param items
+	 */
+	public void deleteItems(SparseBooleanArray items) {
+		for (int i = size() - 1; i >= 0; i--) {
+			if (items.get(i) == true) {
+				this.remove(i);
+			}
+		}
 	}
 
 	@Override

@@ -11,14 +11,13 @@ import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Loader;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView.MultiChoiceModeListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 
 
@@ -42,8 +41,7 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 	private ITodoListReaderWriter m_listReaderWriter;
 
 	private OnFragmentInteractionListener mListener;
-	
-	private ActionMode mActionMode;
+
 	private MultiChoiceModeListener m_actionModeListener;
 
 	/**
@@ -98,8 +96,6 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		setListShown(false);
-		getLoaderManager().initLoader(0, null, this).forceLoad();
 	}
 
 	@Override
@@ -117,23 +113,11 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		OnItemLongClickListener clickListener = new TodoClickListener();
 		ListView listView = getListView();
 		listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 		listView.setMultiChoiceModeListener(m_actionModeListener);
-		listView.setOnItemLongClickListener(clickListener);
-	}
-
-	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		super.onListItemClick(l, v, position, id);
-		
-		if (null != mListener) {
-			// Notify the active callbacks interface (the activity, if the
-			// fragment is attached to one) that an item has been selected.
-			mListener
-					.onFragmentInteraction(m_list.get(position).getText());
-		}
+		setListShown(false);
+		getLoaderManager().initLoader(0, null, this).forceLoad();
 	}
 
 	/**
@@ -146,8 +130,7 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 	 * >Communicating with Other Fragments</a> for more information.
 	 */
 	public interface OnFragmentInteractionListener {
-		// TODO: Update argument type and name
-		public void onFragmentInteraction(String text);
+		public void onFragmentInteraction(Bundle bundle);
 	}
 
 	public TodoList getTodoList() {
@@ -176,6 +159,7 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
         } else {
             setListShownNoAnimation(true);
         }
+        
 	}
 
 	@Override
@@ -200,21 +184,6 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 		}
 
 	}
-
-	class TodoClickListener implements OnItemLongClickListener {
-
-		@Override
-		public boolean onItemLongClick(AdapterView<?> parent, View view,
-				int position, long id) {
-			if (mActionMode != null) {
-				return false;
-			}
-			mActionMode = getActivity().startActionMode(m_actionModeListener);
-			view.setSelected(true);
-			return true;
-		}
-		
-	}
 	
 	class TodoSelectListener implements MultiChoiceModeListener {
 
@@ -228,42 +197,43 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 		@Override
 		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
 			// TODO Auto-generated method stub
-			return false;
+			return true;
 		}
 
 		@Override
 		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-			// TODO Auto-generated method stub
-			return false;
+			SparseBooleanArray selectedItems = getListView().getCheckedItemPositions();
+			switch (item.getItemId()) {
+				case R.id.item_delete:
+					m_list.deleteItems(selectedItems);
+					((TodoAdapter) getListAdapter()).notifyDataSetChanged();
+					break;
+				default:
+					return false;
+			}
+			return true;
 		}
 
 		@Override
 		public void onDestroyActionMode(ActionMode mode) {
-			mActionMode = null;
 		}
 
 		@Override
 		public void onItemCheckedStateChanged(ActionMode mode, int position,
 				long id, boolean checked) {
-			Log.w("Foo", "Item " + id + " state changed.");
-			// TODO Auto-generated method stub
-			
+            final int checkedCount = getListView().getCheckedItemCount();
+            switch (checkedCount) {
+                case 0:
+                    mode.setSubtitle(null);
+                    break;
+                case 1:
+                    mode.setSubtitle("One item selected");
+                    break;
+                default:
+                    mode.setSubtitle("" + checkedCount + " items selected");
+                    break;
+            }
 		}
 		
 	}
-	
-/*	@Override
-	public boolean onLongClick(View v) {
-		SparseBooleanArray checked = getListView().getCheckedItemPositions();
-		TodoList selectedItems = new TodoList();
-		v.setSelected(!v.isSelected());
-		Log.w("TodoListFragment", "Selected view.");
-		for (int i = 0; i < checked.size(); i++) {
-			int position = checked.keyAt(i);
-			if (checked.valueAt(i))
-				selectedItems.add(m_list.get(i));
-		}
-		return true;
-	}*/
-	
 }
