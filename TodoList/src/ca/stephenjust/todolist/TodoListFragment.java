@@ -208,6 +208,10 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 					m_list.deleteItems(selectedItems);
 					((TodoAdapter) getListAdapter()).notifyDataSetChanged();
 					break;
+				case R.id.item_email:
+					TodoList list = m_list.getSubList(selectedItems);
+					TodoEmailer e = new TodoEmailer(getActivity(), list);
+					e.send();
 				default:
 					return false;
 			}

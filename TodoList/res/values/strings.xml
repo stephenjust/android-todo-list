@@ -14,5 +14,10 @@
     <string name="menu_delete">Delete</string>
     <string name="menu_email">Email Items</string>
     <string name="menu_archive">Archive Items</string>
+    
+    <!-- Emailer -->
+    <string name="email_dialog_title">Send to-do list&#8230;</string>
+    <string name="email_subject">My To-Do List</string>
+    <string name="error_no_email">There are currently no applications installed that can send emails.</string>
 
 </resources>

@@ -66,6 +66,21 @@ public class TodoList extends ArrayList<TodoItem> implements Serializable {
 		}
 	}
 
+	/**
+	 * Get sub-list of items specified by SparseBooleanArray.
+	 * @param items
+	 * @return
+	 */
+	public TodoList getSubList(SparseBooleanArray items) {
+		TodoList list = new TodoList();
+		for (int i = 0; i < size(); i++) {
+			if (items.get(i) == true) {
+				list.add(this.get(i));
+			}
+		}
+		return list;
+	}
+
 	@Override
 	public String toString() {
 		String s = "";
