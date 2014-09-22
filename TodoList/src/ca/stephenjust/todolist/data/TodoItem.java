@@ -24,6 +24,9 @@ public class TodoItem implements Serializable {
 	 * @param text To-do text
 	 */
 	public void setText(String text) {
+		if (text == null) {
+			throw new IllegalArgumentException("Text may not be null.");
+		}
 		String trimmedText = text.trim();
 		if (trimmedText.length() == 0) {
 			throw new IllegalArgumentException("Text may not be empty.");
