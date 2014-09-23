@@ -6,6 +6,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +16,9 @@ import android.widget.ViewSwitcher;
 
 public class TodoListActivity extends Activity implements TodoListFragment.OnFragmentInteractionListener, TodoEditFragment.OnFragmentInteractionListener {
 
+	static final String TODO_CURRENT_FILE = "todolist.ser";
+	static final String TODO_ARCHIVE_FILE = "archive.ser";
+	
 	TodoListFragment m_fragment = null;
 	TodoListFragment m_fragment_archived = null;
 	ViewSwitcher mViewSwitcher = null;
@@ -26,8 +30,8 @@ public class TodoListActivity extends Activity implements TodoListFragment.OnFra
 
 		setContentView(R.layout.activity_todo_list);
 		if (savedInstanceState == null) {
-			m_fragment = TodoListFragment.newInstance("todolist.ser", "archive.ser");
-			m_fragment_archived = TodoListFragment.newInstance("archive.ser", null);
+			m_fragment = TodoListFragment.newInstance(TODO_CURRENT_FILE, TODO_ARCHIVE_FILE);
+			m_fragment_archived = TodoListFragment.newInstance(TODO_ARCHIVE_FILE, TODO_CURRENT_FILE);
 			getFragmentManager().beginTransaction()
 					.add(R.id.container, m_fragment)
 					.add(R.id.container_archived, m_fragment_archived).commit();
@@ -79,6 +83,11 @@ public class TodoListActivity extends Activity implements TodoListFragment.OnFra
 		dlg.show(ft, "dialog");
 	}
 	
+	private void launchSummary() {
+		Intent intent = new Intent(this, SummaryActivity.class);
+		startActivity(intent);
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
@@ -88,6 +97,8 @@ public class TodoListActivity extends Activity implements TodoListFragment.OnFra
 		if (id == R.id.action_add) {
 			addTodoItem();
 			return true;
+		} else if (id == R.id.action_summary) {
+			launchSummary();
 		} else if (id == R.id.action_about) {
 			return true;
 		}
@@ -104,6 +115,7 @@ public class TodoListActivity extends Activity implements TodoListFragment.OnFra
 					list.add(new TodoItem(bundle.getString("value")));
 					TodoAdapter la = (TodoAdapter) m_fragment.getListAdapter();
 					la.notifyDataSetChanged();
+					Toast.makeText(this, R.string.todo_created, Toast.LENGTH_SHORT).show();
 				} catch (IllegalArgumentException ex) {
 					Toast.makeText(this, R.string.invalid_todo_text, Toast.LENGTH_SHORT).show();
 				}

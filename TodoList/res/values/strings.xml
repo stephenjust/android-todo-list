@@ -9,19 +9,28 @@
     <string name="invalid_todo_text">Oops, invalid text!</string>
     <string name="ok">OK</string>
     <string name="tmp">Loading</string>
-    
+    <string name="todo_created">Added item to current to-do\'s list.</string>
+
     <!-- Todo Context Menu -->
     <string name="menu_delete">Delete</string>
     <string name="menu_email">Email Items</string>
     <string name="menu_archive">Archive Items</string>
-    
+
     <!-- Tab titles -->
     <string name="tab_current">Current</string>
     <string name="tab_archived">Archived</string>
+
+    <!-- Summary Activity -->
+    <string name="summary">Summary</string>
+    <string name="summary_heading_current">Current To-Do\'s</string>
+    <string name="summary_heading_archived">Archived To-Do\'s</string>
+    <string name="summary_text">Checked: %1$d\nUnchecked: %2$d\nTotal: %3$d</string>
     
     <!-- Emailer -->
     <string name="email_dialog_title">Send to-do list&#8230;</string>
     <string name="email_subject">My To-Do List</string>
     <string name="error_no_email">There are currently no applications installed that can send emails.</string>
+    <string name="title_activity_summary">SummaryActivity</string>
+    <string name="action_settings">Settings</string>
 
 </resources>
