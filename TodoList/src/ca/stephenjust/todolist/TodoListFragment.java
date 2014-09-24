@@ -1,10 +1,7 @@
 package ca.stephenjust.todolist;
 
-import ca.stephenjust.todolist.data.ITodoListReaderWriter;
 import ca.stephenjust.todolist.data.TodoContainer;
 import ca.stephenjust.todolist.data.TodoList;
-import ca.stephenjust.todolist.data.SerializedTodoListReaderWriter;
-import android.app.Activity;
 import android.os.Bundle;
 import android.app.ListFragment;
 import android.app.LoaderManager;
@@ -39,10 +36,8 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 	private String m_archiveListName;
 
 	private TodoList m_list;
-	private ITodoListReaderWriter m_listReaderWriter;
 
-	private OnFragmentInteractionListener mListener;
-
+	private ActionMode mActionMode;
 	private MultiChoiceModeListener m_actionModeListener;
 
 	/**
@@ -80,29 +75,11 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 		}
 
 		m_actionModeListener = new TodoSelectListener();
-		m_listReaderWriter = new SerializedTodoListReaderWriter(getActivity().getApplication());
-	}
-
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		try {
-			mListener = (OnFragmentInteractionListener) activity;
-		} catch (ClassCastException e) {
-			throw new ClassCastException(activity.toString()
-					+ " must implement OnFragmentInteractionListener");
-		}
 	}
 	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-	}
-
-	@Override
-	public void onDetach() {
-		super.onDetach();
-		mListener = null;
 	}
 	
 	@Override
@@ -111,8 +88,15 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 		ListView listView = getListView();
 		listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 		listView.setMultiChoiceModeListener(m_actionModeListener);
+		listView.clearChoices();
 		setListShown(false);
 		getLoaderManager().initLoader(0, null, this).forceLoad();
+	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		finishActionMode();
 	}
 
 	/**
@@ -134,14 +118,14 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 
 	@Override
 	public Loader<TodoList> onCreateLoader(int id, Bundle args) {
-		return new TodoListLoader(getActivity(), m_listName, m_listReaderWriter);
+		return new TodoListLoader(getActivity(), m_listName);
 	}
 
 	@Override
 	public void onLoadFinished(Loader<TodoList> loader, TodoList data) {
 		m_list = data;
 		Log.d("TodoLoader", "Loaded " + m_list.size() + " items.");
-		TodoAdapter adapter = new TodoAdapter(getActivity(), m_list);
+		TodoAdapter adapter = TodoContainer.getInstance().getAdapter(getActivity(), m_listName);
 		setListAdapter(adapter);
 		
         // The list should now be shown.
@@ -158,12 +142,18 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 		setListAdapter(null);
 	}
 	
+	public void finishActionMode() {
+		if (mActionMode != null) {
+			mActionMode.finish();
+		}
+	}
+	
 	private static class TodoListLoader extends AsyncTaskLoader<TodoList> {
 
 		Context mContext;
 		String mListFile;
 		
-		public TodoListLoader(Context context, String listFile, ITodoListReaderWriter listRW) {
+		public TodoListLoader(Context context, String listFile) {
 			super(context);
 			mContext = context;
 			mListFile = listFile;
@@ -180,6 +170,8 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			if (mActionMode != null) return false;
+			mActionMode = mode;
 			MenuInflater inflater = mode.getMenuInflater();
 			inflater.inflate(R.menu.todo_context_menu, menu);
 			return true;
@@ -187,7 +179,6 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 
 		@Override
 		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-			// TODO Auto-generated method stub
 			return true;
 		}
 
@@ -197,12 +188,20 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 			switch (item.getItemId()) {
 				case R.id.item_delete:
 					m_list.deleteItems(selectedItems);
-					((TodoAdapter) getListAdapter()).notifyDataSetChanged();
+					TodoContainer.getInstance().saveLists(getActivity());
+					mode.finish();
 					break;
 				case R.id.item_email:
 					TodoList list = m_list.getSubList(selectedItems);
 					TodoEmailer e = new TodoEmailer(getActivity(), list);
 					e.send();
+					mode.finish();
+					break;
+				case R.id.item_archive:
+					TodoList targetList = TodoContainer.getInstance().getList(getActivity(), m_archiveListName);
+					m_list.moveItems(selectedItems, targetList);
+					TodoContainer.getInstance().saveLists(getActivity());
+					mode.finish();
 					break;
 				default:
 					return false;
@@ -212,6 +211,7 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 
 		@Override
 		public void onDestroyActionMode(ActionMode mode) {
+			mActionMode = null;
 		}
 
 		@Override

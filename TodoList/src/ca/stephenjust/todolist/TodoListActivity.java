@@ -49,6 +49,12 @@ public class TodoListActivity extends Activity implements TodoListFragment.OnFra
 	        	if (mViewSwitcher != null) {
 	        		mViewSwitcher.setDisplayedChild(tab.getPosition());
 	        	}
+	        	if (m_fragment != null) {
+	        		m_fragment.finishActionMode();
+	        	}
+	        	if (m_fragment_archived != null) {
+	        		m_fragment_archived.finishActionMode();
+	        	}
 	        }
 
 	        public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
@@ -111,8 +117,10 @@ public class TodoListActivity extends Activity implements TodoListFragment.OnFra
 		} else if (id == R.id.action_email_all) {
 			TodoList current = mTodoContainer.getList(this, TodoContainer.TODO_CURRENT);
 			TodoList archived = mTodoContainer.getList(this, TodoContainer.TODO_ARCHIVE);
-			current.addAll(archived);
-			TodoEmailer e = new TodoEmailer(this, current);
+			TodoList emailList = new TodoList();
+			emailList.addAll(current);
+			emailList.addAll(archived);
+			TodoEmailer e = new TodoEmailer(this, emailList);
 			e.send();
 			return true;
 		}

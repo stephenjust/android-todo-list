@@ -3,6 +3,8 @@ package ca.stephenjust.todolist.data;
 import java.util.HashMap;
 import java.util.Set;
 
+import ca.stephenjust.todolist.TodoAdapter;
+
 import android.content.Context;
 
 /**
@@ -18,9 +20,11 @@ public class TodoContainer {
 	public static final String TODO_ARCHIVE = "archive.ser";
 	
 	private HashMap<String, TodoList> mLists;
+	private HashMap<String, TodoAdapter> mAdapters;
 
 	private TodoContainer() {
 		mLists = new HashMap<String, TodoList>();
+		mAdapters = new HashMap<String, TodoAdapter>();
 	}
 	
 	public static TodoContainer getInstance() {
@@ -28,7 +32,19 @@ public class TodoContainer {
 		mInstance = new TodoContainer();
 		return mInstance;
 	}
-	
+
+	public TodoAdapter getAdapter(Context context, String name) {
+		if (mAdapters.containsKey(name)) {
+			if (mAdapters.get(name) == null) {
+				mAdapters.put(name, new TodoAdapter(context, getList(context, name)));
+			}
+			return mAdapters.get(name);
+		} else {
+			mAdapters.put(name, new TodoAdapter(context, getList(context, name)));
+			return mAdapters.get(name);
+		}
+	}
+
 	public TodoList getList(Context context, String name) {
 		if (mLists.containsKey(name)) {
 			if (mLists.get(name) == null) {
@@ -51,6 +67,7 @@ public class TodoContainer {
 		Set<String> keys = mLists.keySet();
 		for (String key: keys) {
 			rw.write(key, mLists.get(key));
+			mAdapters.get(key).notifyDataSetChanged();
 		}
 	}
 

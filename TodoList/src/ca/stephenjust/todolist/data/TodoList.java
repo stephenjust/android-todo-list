@@ -67,6 +67,20 @@ public class TodoList extends ArrayList<TodoItem> implements Serializable {
 	}
 
 	/**
+	 * Move list items to a different list.
+	 * @param items
+	 * @param targetList
+	 */
+	public void moveItems(SparseBooleanArray items, TodoList targetList) {
+		for (int i = 0; i < size(); i++) {
+			if (items.get(i) == true) {
+				targetList.add(get(i));
+			}
+		}
+		deleteItems(items);
+	}
+
+	/**
 	 * Get sub-list of items specified by SparseBooleanArray.
 	 * @param items
 	 * @return
