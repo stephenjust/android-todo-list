@@ -107,7 +107,13 @@ public class TodoListActivity extends Activity implements TodoListFragment.OnFra
 			return true;
 		} else if (id == R.id.action_summary) {
 			launchSummary();
-		} else if (id == R.id.action_about) {
+			return true;
+		} else if (id == R.id.action_email_all) {
+			TodoList current = mTodoContainer.getList(this, TodoContainer.TODO_CURRENT);
+			TodoList archived = mTodoContainer.getList(this, TodoContainer.TODO_ARCHIVE);
+			current.addAll(archived);
+			TodoEmailer e = new TodoEmailer(this, current);
+			e.send();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
