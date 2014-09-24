@@ -1,6 +1,7 @@
 package ca.stephenjust.todolist;
 
 import ca.stephenjust.todolist.data.ITodoListReaderWriter;
+import ca.stephenjust.todolist.data.TodoContainer;
 import ca.stephenjust.todolist.data.TodoList;
 import ca.stephenjust.todolist.data.SerializedTodoListReaderWriter;
 import android.app.Activity;
@@ -36,7 +37,7 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 	// File names for serialized lists
 	private String m_listName;
 	private String m_archiveListName;
-	
+
 	private TodoList m_list;
 	private ITodoListReaderWriter m_listReaderWriter;
 
@@ -77,7 +78,7 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 			m_listName = getArguments().getString(ARG_LIST);
 			m_archiveListName = getArguments().getString(ARG_ARCHIVE_LIST);
 		}
-		
+
 		m_actionModeListener = new TodoSelectListener();
 		m_listReaderWriter = new SerializedTodoListReaderWriter(getActivity().getApplication());
 	}
@@ -102,12 +103,6 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 	public void onDetach() {
 		super.onDetach();
 		mListener = null;
-	}
-	
-	@Override
-	public void onPause() {
-		super.onPause();
-		m_listReaderWriter.write(m_listName,  m_list);
 	}
 	
 	@Override
@@ -145,10 +140,6 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 	@Override
 	public void onLoadFinished(Loader<TodoList> loader, TodoList data) {
 		m_list = data;
-		if (m_list == null) {
-			Log.e("TodoLoader", "Returned data was null.");
-			m_list = new TodoList();
-		}
 		Log.d("TodoLoader", "Loaded " + m_list.size() + " items.");
 		TodoAdapter adapter = new TodoAdapter(getActivity(), m_list);
 		setListAdapter(adapter);
@@ -169,18 +160,18 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 	
 	private static class TodoListLoader extends AsyncTaskLoader<TodoList> {
 
-		String m_listFile;
-		ITodoListReaderWriter m_readerWriter;
+		Context mContext;
+		String mListFile;
 		
 		public TodoListLoader(Context context, String listFile, ITodoListReaderWriter listRW) {
 			super(context);
-			m_listFile = listFile;
-			m_readerWriter = listRW;
+			mContext = context;
+			mListFile = listFile;
 		}
 
 		@Override
 		public TodoList loadInBackground() {
-			return m_readerWriter.read(m_listFile);
+			return TodoContainer.getInstance().getList(mContext, mListFile);
 		}
 
 	}
@@ -212,6 +203,7 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 					TodoList list = m_list.getSubList(selectedItems);
 					TodoEmailer e = new TodoEmailer(getActivity(), list);
 					e.send();
+					break;
 				default:
 					return false;
 			}
@@ -225,18 +217,6 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 		@Override
 		public void onItemCheckedStateChanged(ActionMode mode, int position,
 				long id, boolean checked) {
-            final int checkedCount = getListView().getCheckedItemCount();
-            switch (checkedCount) {
-                case 0:
-                    mode.setSubtitle(null);
-                    break;
-                case 1:
-                    mode.setSubtitle("One item selected");
-                    break;
-                default:
-                    mode.setSubtitle("" + checkedCount + " items selected");
-                    break;
-            }
 		}
 		
 	}

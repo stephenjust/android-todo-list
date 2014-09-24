@@ -1,7 +1,6 @@
 package ca.stephenjust.todolist;
 
-import ca.stephenjust.todolist.data.ITodoListReaderWriter;
-import ca.stephenjust.todolist.data.SerializedTodoListReaderWriter;
+import ca.stephenjust.todolist.data.TodoContainer;
 import ca.stephenjust.todolist.data.TodoList;
 import android.app.Activity;
 import android.os.Bundle;
@@ -11,7 +10,7 @@ public class SummaryActivity extends Activity {
 
 	TextView mCurrentSummaryText;
 	TextView mArchiveSummaryText;
-	ITodoListReaderWriter mTodoReader;
+	TodoContainer mTodoContainer;
 	TodoList mCurrentList;
 	TodoList mArchiveList;
 	
@@ -22,7 +21,7 @@ public class SummaryActivity extends Activity {
 		
 		mCurrentSummaryText = (TextView) findViewById(R.id.summary_current);
 		mArchiveSummaryText = (TextView) findViewById(R.id.summary_archived);
-		mTodoReader = new SerializedTodoListReaderWriter(this.getApplication());
+		mTodoContainer = TodoContainer.getInstance();
 	}
 	
 	@Override
@@ -33,8 +32,8 @@ public class SummaryActivity extends Activity {
 	}
 
 	private void loadLists() {
-		mCurrentList = mTodoReader.read(TodoListActivity.TODO_CURRENT_FILE);
-		mArchiveList = mTodoReader.read(TodoListActivity.TODO_ARCHIVE_FILE);
+		mCurrentList = mTodoContainer.getList(getApplication(), TodoContainer.TODO_CURRENT);
+		mArchiveList = mTodoContainer.getList(getApplication(), TodoContainer.TODO_ARCHIVE);
 	}
 	
 	private void updateSummary() {

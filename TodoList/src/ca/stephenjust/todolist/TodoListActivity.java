@@ -1,5 +1,6 @@
 package ca.stephenjust.todolist;
 
+import ca.stephenjust.todolist.data.TodoContainer;
 import ca.stephenjust.todolist.data.TodoItem;
 import ca.stephenjust.todolist.data.TodoList;
 import android.app.ActionBar;
@@ -16,8 +17,7 @@ import android.widget.ViewSwitcher;
 
 public class TodoListActivity extends Activity implements TodoListFragment.OnFragmentInteractionListener, TodoEditFragment.OnFragmentInteractionListener {
 
-	static final String TODO_CURRENT_FILE = "todolist.ser";
-	static final String TODO_ARCHIVE_FILE = "archive.ser";
+	TodoContainer mTodoContainer = null;
 	
 	TodoListFragment m_fragment = null;
 	TodoListFragment m_fragment_archived = null;
@@ -26,12 +26,13 @@ public class TodoListActivity extends Activity implements TodoListFragment.OnFra
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mTodoContainer = TodoContainer.getInstance();
 		setupTabs();
 
 		setContentView(R.layout.activity_todo_list);
 		if (savedInstanceState == null) {
-			m_fragment = TodoListFragment.newInstance(TODO_CURRENT_FILE, TODO_ARCHIVE_FILE);
-			m_fragment_archived = TodoListFragment.newInstance(TODO_ARCHIVE_FILE, TODO_CURRENT_FILE);
+			m_fragment = TodoListFragment.newInstance(TodoContainer.TODO_CURRENT, TodoContainer.TODO_ARCHIVE);
+			m_fragment_archived = TodoListFragment.newInstance(TodoContainer.TODO_ARCHIVE, TodoContainer.TODO_CURRENT);
 			getFragmentManager().beginTransaction()
 					.add(R.id.container, m_fragment)
 					.add(R.id.container_archived, m_fragment_archived).commit();
@@ -77,10 +78,17 @@ public class TodoListActivity extends Activity implements TodoListFragment.OnFra
 		return true;
 	}
 
+	@Override
+	public void onPause() {
+		super.onPause();
+		mTodoContainer.saveLists(getApplication());
+	}
+
 	private void addTodoItem() {
 		DialogFragment dlg = TodoEditFragment.newInstance("");
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
 		dlg.show(ft, "dialog");
+		mTodoContainer.saveLists(this);
 	}
 	
 	private void launchSummary() {
