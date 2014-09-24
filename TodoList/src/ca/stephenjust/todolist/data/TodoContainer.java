@@ -25,7 +25,8 @@ public class TodoContainer {
 	
 	public static TodoContainer getInstance() {
 		if (mInstance != null) return mInstance;
-		return new TodoContainer();
+		mInstance = new TodoContainer();
+		return mInstance;
 	}
 	
 	public TodoList getList(Context context, String name) {
