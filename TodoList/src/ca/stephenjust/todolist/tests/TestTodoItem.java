@@ -35,6 +35,17 @@ public class TestTodoItem extends TestCase {
 		}
 	}
 	
+	public void testEquals() {
+		TodoItem itemA = new TodoItem("Item A");
+		TodoItem itemB = new TodoItem("Item B");
+		TodoItem itemB_checked = new TodoItem("Item B");
+		itemB_checked.setCompleted(true);
+		assertFalse(itemA.equals(itemB));
+		assertFalse(itemB.equals(itemA));
+		assertFalse(itemB.equals(itemB_checked));
+		assertTrue(itemB.equals(itemB));
+	}
+	
 	public void testToString() {
 		assertEquals("[ ] Sample item.", mItem.toString());
 		mItem.setCompleted(true);
