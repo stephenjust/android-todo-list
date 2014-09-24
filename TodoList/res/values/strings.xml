@@ -4,7 +4,7 @@
     <string name="app_name">Todo List</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_add">Add Item</string>
-    <string name="action_about">About</string>
+    <string name="action_email_all">Email All</string>
     <string name="todo_hint">Type your item here</string>
     <string name="invalid_todo_text">Oops, invalid text!</string>
     <string name="ok">OK</string>
