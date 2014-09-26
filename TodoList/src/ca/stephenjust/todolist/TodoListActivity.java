@@ -40,7 +40,7 @@ public class TodoListActivity extends Activity implements TodoListFragment.OnFra
 		}
 	}
 	
-	public void setupTabs() {
+	private void setupTabs() {
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		
@@ -85,7 +85,7 @@ public class TodoListActivity extends Activity implements TodoListFragment.OnFra
 	}
 
 	@Override
-	public void onPause() {
+	protected void onPause() {
 		super.onPause();
 		mTodoContainer.saveLists(getApplication());
 	}
