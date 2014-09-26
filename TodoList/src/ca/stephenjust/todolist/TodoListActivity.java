@@ -34,7 +34,7 @@ public class TodoListActivity extends Activity implements TodoListFragment.OnFra
 			m_fragment = TodoListFragment.newInstance(TodoContainer.TODO_CURRENT, TodoContainer.TODO_ARCHIVE);
 			m_fragment_archived = TodoListFragment.newInstance(TodoContainer.TODO_ARCHIVE, TodoContainer.TODO_CURRENT);
 			getFragmentManager().beginTransaction()
-					.add(R.id.container, m_fragment)
+					.add(R.id.container, m_fragment, "MAIN_FRAGMENT")
 					.add(R.id.container_archived, m_fragment_archived).commit();
 			mViewSwitcher = (ViewSwitcher) findViewById(R.id.view_switcher);
 		}
@@ -130,6 +130,9 @@ public class TodoListActivity extends Activity implements TodoListFragment.OnFra
 	@Override
 	public void onFragmentInteraction(Bundle bundle) {
 		String fragment = bundle.getString("fragment");
+		if (m_fragment == null) {
+			m_fragment = (TodoListFragment) getFragmentManager().findFragmentByTag("MAIN_FRAGMENT");
+		}
 		if (fragment.equals("edit")) {
 			TodoList list = m_fragment.getTodoList();
 			if (list != null) {
