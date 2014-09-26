@@ -15,6 +15,11 @@ import java.io.OutputStream;
 import android.content.Context;
 import android.util.Log;
 
+/**
+ * Implementation of TodoListReaderWriter, where data is stored as serialized objects
+ * @author Stephen
+ *
+ */
 public class SerializedTodoListReaderWriter implements ITodoListReaderWriter {
 
 	Context mContext;
@@ -23,6 +28,9 @@ public class SerializedTodoListReaderWriter implements ITodoListReaderWriter {
 		mContext = context;
 	}
 
+	/**
+	 * Serialize a TodoList
+	 */
 	public void write(String listName, TodoList list) {
 		OutputStream os;
 		ObjectOutput oo;
@@ -41,7 +49,10 @@ public class SerializedTodoListReaderWriter implements ITodoListReaderWriter {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Deserialize a TodoList
+	 */
 	public TodoList read(String listName) {
 		InputStream is;
 		ObjectInput oi;

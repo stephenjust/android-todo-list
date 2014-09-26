@@ -28,8 +28,7 @@ public class TodoEditFragment extends DialogFragment {
 	 * Use this factory method to create a new instance of this fragment using
 	 * the provided parameters.
 	 * 
-	 * @param item
-	 *            To-do item text, may be blank.
+	 * @param item To-do item text, may be blank.
 	 * @return A new instance of fragment TodoEditFragment.
 	 */
 	public static TodoEditFragment newInstance(String item) {
@@ -47,9 +46,11 @@ public class TodoEditFragment extends DialogFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		// Pre-fill text if available.
 		if (getArguments() != null) {
 			mItem = getArguments().getString(ARG_ITEM);
 		}
+		// Set the dialog box to be white with no window decorations.
 		setStyle(DialogFragment.STYLE_NO_TITLE,
 				android.R.style.Theme_Holo_Light_Dialog_MinWidth);
 	}
@@ -68,6 +69,7 @@ public class TodoEditFragment extends DialogFragment {
 			@Override
 			public void onClick(View v) {
 				if (mListener != null) {
+					// Send text back to fragment so that item can be added to list.
 					Bundle bundle = new Bundle();
 					bundle.putString("fragment", "edit");
 					bundle.putString("value", mEditText.getText().toString());

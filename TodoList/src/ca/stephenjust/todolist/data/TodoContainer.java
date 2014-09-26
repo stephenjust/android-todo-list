@@ -22,6 +22,9 @@ public class TodoContainer {
 	private HashMap<String, TodoList> mLists;
 	private HashMap<String, TodoAdapter> mAdapters;
 
+	/**
+	 * Private constructor
+	 */
 	private TodoContainer() {
 		mLists = new HashMap<String, TodoList>();
 		mAdapters = new HashMap<String, TodoAdapter>();
@@ -33,6 +36,12 @@ public class TodoContainer {
 		return mInstance;
 	}
 
+	/**
+	 * Get a list adapter
+	 * @param context
+	 * @param name list name
+	 * @return
+	 */
 	public TodoAdapter getAdapter(Context context, String name) {
 		if (mAdapters.containsKey(name)) {
 			if (mAdapters.get(name) == null) {
@@ -45,6 +54,12 @@ public class TodoContainer {
 		}
 	}
 
+	/**
+	 * Get a list of items
+	 * @param context
+	 * @param name list name
+	 * @return
+	 */
 	public TodoList getList(Context context, String name) {
 		if (mLists.containsKey(name)) {
 			if (mLists.get(name) == null) {
@@ -56,18 +71,31 @@ public class TodoContainer {
 			return mLists.get(name);
 		}
 	}
-	
+
+	/**
+	 * Load a list from the saved state
+	 * @param context
+	 * @param name
+	 * @return
+	 */
 	private TodoList loadList(Context context, String name) {
 		ITodoListReaderWriter rw = new SerializedTodoListReaderWriter(context);
 		return rw.read(name);
 	}
-	
+
+	/**
+	 * Save all lists
+	 * @param context
+	 */
 	public void saveLists(Context context) {
 		ITodoListReaderWriter rw = new SerializedTodoListReaderWriter(context);
 		Set<String> keys = mLists.keySet();
 		for (String key: keys) {
 			rw.write(key, mLists.get(key));
-			mAdapters.get(key).notifyDataSetChanged();
+			TodoAdapter adapter = mAdapters.get(key);
+			if (adapter != null) {
+				adapter.notifyDataSetChanged();
+			}
 		}
 	}
 

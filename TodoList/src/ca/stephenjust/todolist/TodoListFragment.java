@@ -21,9 +21,8 @@ import android.widget.ListView;
 
 /**
  * A fragment representing a list of Items.
- * <p />
- * <p />
- * Activities containing this fragment MUST implement the {@link Callbacks}
+ * 
+ * Activities containing this fragment MUST implement the {@link LoaderCallbacks}
  * interface.
  */
 public class TodoListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<TodoList> {
@@ -78,18 +77,16 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 	}
 	
 	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-	}
-	
-	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
+		// Set up list view.
 		ListView listView = getListView();
 		listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 		listView.setMultiChoiceModeListener(m_actionModeListener);
 		listView.clearChoices();
+		// Show loading spinner.
 		setListShown(false);
+		// Trigger async loading of items.
 		getLoaderManager().initLoader(0, null, this).forceLoad();
 	}
 	
@@ -112,7 +109,14 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 		public void onFragmentInteraction(Bundle bundle);
 	}
 
+	/**
+	 * Get list of items
+	 * @return List of items shown by this fragment
+	 */
 	public TodoList getTodoList() {
+		if (m_list == null) {
+			m_list = TodoContainer.getInstance().getList(getActivity(), m_listName);
+		}
 		return m_list;
 	}
 
@@ -141,7 +145,10 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 	public void onLoaderReset(Loader<TodoList> loader) {
 		setListAdapter(null);
 	}
-	
+
+	/**
+	 * End action mode if set on this fragment
+	 */
 	public void finishActionMode() {
 		if (mActionMode != null) {
 			mActionMode.finish();
@@ -165,7 +172,11 @@ public class TodoListFragment extends ListFragment implements LoaderManager.Load
 		}
 
 	}
-	
+
+	/**
+	 * Listener to handle selection of multiple items.
+	 * @author Stephen Just
+	 */
 	class TodoSelectListener implements MultiChoiceModeListener {
 
 		@Override

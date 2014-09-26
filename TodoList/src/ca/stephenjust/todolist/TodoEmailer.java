@@ -10,11 +10,19 @@ public class TodoEmailer {
 	private Context mContext;
 	private TodoList mItems;
 
+	/**
+	 * Constructor
+	 * @param context
+	 * @param items
+	 */
 	public TodoEmailer(Context context, TodoList items) {
 		mContext = context;
 		mItems = items;
 	}
 
+	/**
+	 * Send an "email" intent containing the to-do list.
+	 */
 	public void send() {
 		Intent i = new Intent(Intent.ACTION_SEND);
 		i.setType("message/rfc822");

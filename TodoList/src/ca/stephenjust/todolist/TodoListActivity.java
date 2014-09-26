@@ -15,6 +15,13 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 
+/**
+ * Activity for main view.
+ * @author Stephen Just
+ *
+ * This is an activity with a set of tabs allowing the user to toggle between
+ * lists of items.
+ */
 public class TodoListActivity extends Activity implements TodoListFragment.OnFragmentInteractionListener, TodoEditFragment.OnFragmentInteractionListener {
 
 	TodoContainer mTodoContainer = null;
@@ -29,6 +36,7 @@ public class TodoListActivity extends Activity implements TodoListFragment.OnFra
 		mTodoContainer = TodoContainer.getInstance();
 		setupTabs();
 
+		// Set-up fragments.
 		setContentView(R.layout.activity_todo_list);
 		if (savedInstanceState == null) {
 			m_fragment = TodoListFragment.newInstance(TodoContainer.TODO_CURRENT, TodoContainer.TODO_ARCHIVE);
@@ -41,14 +49,18 @@ public class TodoListActivity extends Activity implements TodoListFragment.OnFra
 	}
 	
 	private void setupTabs() {
+		// Add tab panel
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		
+		// Create listener to handle tab actions
 	    ActionBar.TabListener tabListener = new ActionBar.TabListener() {
 	        public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
 	        	if (mViewSwitcher != null) {
 	        		mViewSwitcher.setDisplayedChild(tab.getPosition());
 	        	}
+	        	// Hack to force selections to end when switching tabs.
+	        	// There is likely a more flexible way to do this, but if it ain't broke...
 	        	if (m_fragment != null) {
 	        		m_fragment.finishActionMode();
 	        	}
@@ -58,14 +70,13 @@ public class TodoListActivity extends Activity implements TodoListFragment.OnFra
 	        }
 
 	        public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
-	            // hide the given tab
 	        }
 
 	        public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
-	            // probably ignore this event
 	        }
 	    };
 
+	    // Create tabs
         actionBar.addTab(
                 actionBar.newTab()
                         .setText(R.string.tab_current)
@@ -87,16 +98,23 @@ public class TodoListActivity extends Activity implements TodoListFragment.OnFra
 	@Override
 	protected void onPause() {
 		super.onPause();
+		// Save lists when activity is paused.
 		mTodoContainer.saveLists(getApplication());
 	}
 
+	/**
+	 * Create "add item" dialog.
+	 */
 	private void addTodoItem() {
 		DialogFragment dlg = TodoEditFragment.newInstance("");
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
 		dlg.show(ft, "dialog");
 		mTodoContainer.saveLists(this);
 	}
-	
+
+	/**
+	 * Open SummaryActivity
+	 */
 	private void launchSummary() {
 		Intent intent = new Intent(this, SummaryActivity.class);
 		startActivity(intent);
@@ -115,6 +133,7 @@ public class TodoListActivity extends Activity implements TodoListFragment.OnFra
 			launchSummary();
 			return true;
 		} else if (id == R.id.action_email_all) {
+			// Create a list of all items to send. A bit of a hack, but it works.
 			TodoList current = mTodoContainer.getList(this, TodoContainer.TODO_CURRENT);
 			TodoList archived = mTodoContainer.getList(this, TodoContainer.TODO_ARCHIVE);
 			TodoList emailList = new TodoList();
@@ -127,6 +146,10 @@ public class TodoListActivity extends Activity implements TodoListFragment.OnFra
 		return super.onOptionsItemSelected(item);
 	}
 
+	/**
+	 * Handle responses from fragments.
+	 * Only the new item fragment is specially handled here.
+	 */
 	@Override
 	public void onFragmentInteraction(Bundle bundle) {
 		String fragment = bundle.getString("fragment");
