@@ -1,7 +1,7 @@
-cmput301-assign1
-================
+Android Todo List
+=================
 
-TODO List Android Application by Stephen Just
+TODO List Android Application by Stephen Just, created as an assignment for [CMPUT301](https://www.cs.ualberta.ca/undergraduate-students/course-directory/introduction-software-engineering)
 
 This project makes use of the [Action Bar Icon Pack](https://developer.android.com/design/downloads/index.html), CC-BY 2.5
 
